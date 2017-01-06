@@ -1,12 +1,13 @@
-var fs = require('fs');
+var express = require('express');
+var app = express();
 
-/*var read = fs.readFileSync('read.txt', 'utf8');
-console.log(read);
-
-fs.writeFileSync('write.txt', read);*/
-
-fs.readFile('read.txt', 'utf8', function(err, data){
-  fs.writeFile('write.txt', data, function() {
-    console.log("Ecriture terminee");
-  });
+app.use('/', function(req, res, next) {
+  console.log('Coucou middle');
+  next();
 });
+
+app.get('/', function(req, res) {
+  res.end('hello');
+});
+
+app.listen(1337);
