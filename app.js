@@ -3,13 +3,7 @@ var app = express();
 var fs = require('fs');
 var querystring = require('querystring');
 
-app.get('/', function(req, res) {
-  fs.readFile('views/index.html', 'utf8', function(err, data) {
-    res.end(data);
-  });
-});
-
-app.get('/index', function(req, res) {
+app.get(['/','/index'], function(req, res) {
   fs.readFile('views/index.html', 'utf8', function(err, data) {
     res.end(data);
   });
@@ -40,6 +34,16 @@ app.post('/contact', function(req, res) {
 
 app.get('/api/people', function(req, res) {
   fs.readFile('data/people.json', 'utf8', function(err, data) {
+    res.json(data);
+  });
+});
+
+app.get('/api/people/:id', function(req, res) {
+  console.log(req.params.id);
+});
+
+app.all('*', function(req, res) {
+  fs.readFile('views/404.html', 'utf8', function(err, data) {
     res.end(data);
   });
 });
