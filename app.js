@@ -3,47 +3,40 @@ var app = express();
 var fs = require('fs');
 var querystring = require('querystring');
 
-app.get(['/','/index'], function(req, res) {
-  fs.readFile('views/index.html', 'utf8', function(err, data) {
+app.get(['/', '/index'], function(req, res) {
+  fs.readFile('views/index.html', 'utf8', function(err, data){
     res.end(data);
   });
 });
 
-app.get('/contact', function(req, res) {
-  fs.readFile('views/contact.html', 'utf8', function(err, data) {
+app.get('/category/:name', function(req, res) {
+  var name = req.params.name;
+  fs.readFile('views/index.html', 'utf8', function(err, data){
     res.end(data);
   });
 });
 
-app.post('/contact', function(req, res) {
-
-  var data = "";
-  req.on('data', function(chunk) {
-    data += chunk;
-  });
-
-  req.on('end', function() {
-    var dataParse = querystring.parse(data);
-    console.log(dataParse);
-  });
-
-  fs.readFile('views/contact.html', 'utf8', function(err, data) {
+app.get('/post/:id', function(req, res) {
+  var id = req.params.id;
+  fs.readFile('views/detail.html', 'utf8', function(err, data){
     res.end(data);
   });
 });
 
-app.get('/api/people', function(req, res) {
-  fs.readFile('data/people.json', 'utf8', function(err, data) {
-    res.json(data);
+app.get('/post', function(req, res) {
+  fs.readFile('views/post.html', 'utf8', function(err, data){
+    res.end(data);
   });
 });
 
-app.get('/api/people/:id', function(req, res) {
-  console.log(req.params.id);
+app.post('/post', function(req, res) {
+  fs.readFile('views/post.html', 'utf8', function(err, data){
+    res.end(data);
+  });
 });
 
-app.all('*', function(req, res) {
-  fs.readFile('views/404.html', 'utf8', function(err, data) {
+app.get('/public/css/bootstrap.min.css', function(req, res) {
+  fs.readFile('public/css/bootstrap.min.css', 'utf8', function(err, data){
     res.end(data);
   });
 });
