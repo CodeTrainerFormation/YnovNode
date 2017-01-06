@@ -1,18 +1,28 @@
 var router = require('express').Router();
 var fs = require('fs');
+var data = require('../helpers/data');
 
 router.get(['/', '/index'], function(req, res) {
-  fs.readFile(__dirname + '/../views/index.html', 'utf8', function(err, data){
-    console.log(err);
-    res.end(data);
+  data.loadData('post.json', function(err, posts) {
+    console.log(posts);
+    res.render('index.html', { posts: JSON.parse(posts) });
   });
 });
 
 router.get('/category/:name', function(req, res) {
   var name = req.params.name;
-  fs.readFile('views/index.html', 'utf8', function(err, data){
-    res.end(data);
+
+  var filterByCategory = function(n) {
+    return function(elem) {
+      return elem.category == n;
+    }
+  }
+
+  data.loadData('post.json', function(err, posts) {
+    var postFiltered = JSON.parse(posts).filter(filterByCategory(name));
+    res.render('index.html', { posts : postFiltered });
   });
+
 });
 
 module.exports = router;
