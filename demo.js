@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var db = require('./config/db');
 
 var parser = bodyParser.urlencoded({extended:false});
 
@@ -10,8 +11,19 @@ app.use('/', function(req, res, next) {
 });
 
 app.get('/', parser, function(req, res) {
-  req.body.firstname
-  res.end('hello');
+
+  var Schema = db.Schema;
+  var personSchema = new Schema({
+    firstname: 'String'
+  });
+
+  var Person = db.model('Person', personSchema);
+
+  var p = new Person({
+    firstname: 'John',
+    lastname: 'DOE'
+  })
+
 });
 
 app.listen(1337);
