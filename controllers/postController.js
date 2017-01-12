@@ -34,14 +34,36 @@ router.post('/:id', parser, function(req, res) {
 });
 
 router.get('/', function(req, res) {
-  fs.readFile('views/post.html', 'utf8', function(err, data){
-    res.end(data);
-  });
+  res.render('post.html');
 });
 
-router.post('/', function(req, res) {
-  fs.readFile('views/post.html', 'utf8', function(err, data){
-    res.end(data);
+router.post('/', parser, function(req, res) {
+  var title = req.body.title;
+  var author = req.body.author;
+  var category = req.body.category;
+
+  data.loadData('post.json', function(err, data) {
+    var maxId = 0;
+    var posts = JSON.parse(data);
+    posts.forEach(function(post) {
+      if(post.id > maxId) {
+        maxId = post.id;
+      }
+    });
+
+    posts.push({
+      id: ++maxId,
+      title: title,
+      author: author,
+      category: category,
+      picture: ""
+    });
+
+    var dataJson = JSON.stringify(posts);
+
+    fs.writeFile(__dirname + '/../data/post.json', dataJson, function(err) {
+      res.redirect('/');
+    })
   });
 });
 
