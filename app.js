@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 
+global.comments = [];
+
 app.engine('.html', require('ejs').__express);
 
 app.set('view engine', 'html');
