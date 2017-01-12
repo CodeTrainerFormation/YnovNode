@@ -24,6 +24,8 @@ app.get('/', parser, function(req, res) {
     lastname: 'DOE'
   })
 
+  p.save();
+
 });
 
 app.listen(1337);
