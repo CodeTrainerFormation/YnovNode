@@ -6,6 +6,7 @@ var filters = require('../helpers/filters');
 var multer = require('multer');
 var crypto = require('crypto');
 var mime = require('mime');
+var Post = require('../models/Post');
 
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -35,12 +36,8 @@ var parser = bodyParser.urlencoded({extended: false});
 router.get('/:id', function(req, res) {
   var idPost = req.params.id;
 
-  data.loadData('../data/post.json', function(err, data) {
-    var posts = JSON.parse(data);
-    var post = posts.find(filters.filterByField('id', idPost));
-    var postComments = comments.filter(filters.filterByField('postId', idPost));
-
-    res.render('detail.html', { post: post, comments: postComments});
+  Post.findById(idPost, function(err, post) {
+    res.render('detail.html', { post: post });
   });
 
 });
@@ -75,28 +72,17 @@ router.post('/', function(req, res) {
     var author = req.body.author;
     var category = req.body.category;
 
-    data.loadData('post.json', function(err, data) {
-      var maxId = 0;
-      var posts = JSON.parse(data);
-      posts.forEach(function(post) {
-        if(post.id > maxId) {
-          maxId = post.id;
-        }
-      });
+    var post = {
+      title: title,
+      author: author,
+      category: category,
+      picture: req.file.path
+    }
 
-      posts.push({
-        id: ++maxId,
-        title: title,
-        author: author,
-        category: category,
-        picture: req.file.path
-      });
+    var p = new Post(post);
 
-      var dataJson = JSON.stringify(posts);
-
-      fs.writeFile(__dirname + '/../data/post.json', dataJson, function(err) {
-        res.redirect('/');
-      })
+    p.save(function(err, postSaved) {
+      res.redirect('/');
     });
   });
 });

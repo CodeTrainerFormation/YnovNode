@@ -22,7 +22,7 @@ app.get('/', parser, function(req, res) {
   var p = new Person({
     firstname: 'John',
     lastname: 'DOE'
-  })
+  });
 
   p.save();
 
